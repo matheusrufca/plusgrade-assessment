@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 
-const AppHeader: FC = () => {
+const TaxCalculatorHeader: FC = () => {
   return (
     <header className="space-y-3">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">
@@ -15,4 +15,4 @@ const AppHeader: FC = () => {
   )
 }
 
-export default AppHeader
+export default TaxCalculatorHeader

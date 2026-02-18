@@ -1,24 +1,46 @@
-import type { FC, SubmitEventHandler } from 'react'
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react'
+import { useCallback, useState } from 'react'
 
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Label from '@/components/Label'
 import Select from '@/components/Select'
 
-type Props = {
+export type TaxFormValues = {
   annualIncome: string
   taxYear: string
-  onIncomeChange: (value: string) => void
-  onYearChange: (value: string) => void
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+}
+
+type Props = {
+  onSubmit: (values: TaxFormValues) => void
+  isCalculating?: boolean
 }
 
 const AVAILABLE_YEARS = Object.freeze<number[]>([2019, 2020, 2021, 2022])
 
-const TaxForm: FC<Props> = ({ annualIncome, taxYear, onIncomeChange, onYearChange, onSubmit }) => {
+const TaxForm: FC<Props> = ({ onSubmit, isCalculating = false }) => {
+  const [annualIncome, setAnnualIncome] = useState('')
+  const [taxYear, setTaxYear] = useState('2022')
+
+  const handleSubmit = useCallback<SubmitEventHandler>(
+    async (event) => {
+      event.preventDefault()
+      await onSubmit({ annualIncome, taxYear })
+    },
+    [annualIncome, onSubmit, taxYear],
+  )
+
+  const handleIncomeChange = useCallback<ChangeEventHandler<HTMLInputElement>>((event) => {
+    setAnnualIncome(event.target.value)
+  }, [])
+
+  const handleTaxYearChange = useCallback<ChangeEventHandler<HTMLSelectElement>>((event) => {
+    setTaxYear(event.target.value)
+  }, [])
+
   return (
     <form
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       className="space-y-6 rounded-2xl border border-slate-800 bg-slate-900/70 p-6"
     >
       <div className="grid gap-6 sm:grid-cols-2">
@@ -32,25 +54,24 @@ const TaxForm: FC<Props> = ({ annualIncome, taxYear, onIncomeChange, onYearChang
             inputMode="decimal"
             placeholder="e.g. 85000"
             value={annualIncome}
-            onChange={(event) => onIncomeChange(event.target.value)}
+            onChange={handleIncomeChange}
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="year">Tax year</Label>
-          <Select
-            id="year"
-            name="year"
-            value={taxYear}
-            onChange={(event) => onYearChange(event.target.value)}
-          >
+          <Select id="year" name="year" value={taxYear} onChange={handleTaxYearChange}>
             {AVAILABLE_YEARS.map((year) => (
-              <option value={year}>{year}</option>
+              <option key={year} value={year}>
+                {year}
+              </option>
             ))}
           </Select>
         </div>
       </div>
 
-      <Button type="submit">Calculate taxes</Button>
+      <Button type="submit" disabled={isCalculating}>
+        Calculate taxes
+      </Button>
     </form>
   )
 }

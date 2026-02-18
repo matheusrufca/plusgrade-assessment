@@ -1,26 +1,65 @@
-import type { FC } from 'react'
+import type { FC, ReactNode } from 'react'
 
-const ResultsPanel: FC = () => {
+import type { TaxCalculationResult } from '@/types/taxCalculator'
+import { formatCurrency, formatPercent } from '@/utils/formatters'
+
+type Props = {
+  result?: TaxCalculationResult
+  error?: string
+}
+
+type LabelValueProps = {
+  label: string
+  value: ReactNode
+}
+
+const LabelValue: FC<LabelValueProps> = ({ label, value }) => {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
+      <p className="text-xs uppercase text-slate-500">{label}</p>
+      <p className="mt-2 text-lg font-semibold text-white">{value}</p>
+    </div>
+  )
+}
+
+const ResultsPanel: FC<Props> = ({ result, error }) => {
   return (
     <section className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-6 text-slate-300">
       <p className="text-sm uppercase tracking-[0.2em] text-slate-500">Results</p>
-      <p className="mt-3 text-base text-slate-300">
-        Results will appear here once the API integration is wired up.
-      </p>
+      {error && <p className="mt-3 text-base text-rose-300">{error}</p>}
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
-          <p className="text-xs uppercase text-slate-500">Total tax</p>
-          <p className="mt-2 text-lg font-semibold text-white">$0.00</p>
-        </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
-          <p className="text-xs uppercase text-slate-500">Effective rate</p>
-          <p className="mt-2 text-lg font-semibold text-white">0%</p>
-        </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
-          <p className="text-xs uppercase text-slate-500">Brackets</p>
-          <p className="mt-2 text-lg font-semibold text-white">0</p>
-        </div>
+        <LabelValue label="Total tax" value={result ? formatCurrency(result.totalTax) : '$0.00'} />
+        <LabelValue
+          label="Effective rate"
+          value={result ? formatPercent(result.effectiveRate) : '0%'}
+        />
+        <LabelValue label="Brackets" value={result ? result.breakdown.length : 0} />
       </div>
+      {result && result.breakdown.length > 0 && (
+        <div className="mt-6 space-y-3">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">By bracket</p>
+          <div className="grid gap-3">
+            {result.breakdown.map((bracket) => (
+              <div
+                key={`${bracket.min}-${bracket.max ?? 'max'}`}
+                className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-slate-300">
+                    {formatCurrency(bracket.min)} -{' '}
+                    {bracket.max ? formatCurrency(bracket.max) : '∞'}
+                  </span>
+                  <span className="font-semibold text-white">{formatPercent(bracket.rate)}</span>
+                </div>
+                <div className="mt-2 text-slate-400">
+                  Taxed {formatCurrency(bracket.taxable)} →{' '}
+                  <span className="text-white">{formatCurrency(bracket.tax)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   )
 }
