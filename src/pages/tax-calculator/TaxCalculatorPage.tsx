@@ -4,7 +4,8 @@ import { useCallback } from 'react'
 import { useTaxCalculator } from '@/hooks/useTaxCalculator'
 import ResultsPanel from '@/pages/tax-calculator/ResultsPanel'
 import TaxCalculatorHeader from '@/pages/tax-calculator/TaxCalculatorHeader'
-import TaxForm, { type TaxFormValues } from '@/pages/tax-calculator/TaxForm'
+import type { TaxCalculatorFormValues } from './TaxCalculatorForm'
+import TaxCalculatorForm from './TaxCalculatorForm'
 
 const ResultsStateCard: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -19,7 +20,7 @@ const TaxCalculatorPage: FC = () => {
   const { status, result, error, calculateTax } = useTaxCalculator()
 
   const handleSubmit = useCallback(
-    async (values: TaxFormValues) => {
+    async (values: TaxCalculatorFormValues) => {
       await calculateTax(values)
     },
     [calculateTax],
@@ -30,7 +31,7 @@ const TaxCalculatorPage: FC = () => {
       <TaxCalculatorHeader />
 
       <main className="mt-10 space-y-8">
-        <TaxForm onSubmit={handleSubmit} isCalculating={status === 'loading'} />
+        <TaxCalculatorForm onSubmit={handleSubmit} />
 
         {status === 'idle' && (
           <ResultsStateCard>Enter an income and tax year to see the breakdown.</ResultsStateCard>

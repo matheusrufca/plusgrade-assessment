@@ -6,26 +6,33 @@ import Input from '@/components/Input'
 import Label from '@/components/Label'
 import Select from '@/components/Select'
 
-export type TaxFormValues = {
+export type TaxCalculatorFormValues = {
   annualIncome: string
   taxYear: string
 }
 
 type Props = {
-  onSubmit: (values: TaxFormValues) => void
-  isCalculating?: boolean
+  onSubmit: (values: TaxCalculatorFormValues) => Promise<void> | void
 }
 
 const AVAILABLE_YEARS = Object.freeze<number[]>([2019, 2020, 2021, 2022])
 
-const TaxForm: FC<Props> = ({ onSubmit, isCalculating = false }) => {
+const TaxCalculatorForm: FC<Props> = ({ onSubmit }) => {
   const [annualIncome, setAnnualIncome] = useState('')
   const [taxYear, setTaxYear] = useState('2022')
+  const [formState, setFormState] = useState<'idle' | 'submiting'>('idle')
 
   const handleSubmit = useCallback<SubmitEventHandler>(
     async (event) => {
       event.preventDefault()
-      await onSubmit({ annualIncome, taxYear })
+      setFormState('submiting')
+      try {
+        if (!taxYear || !annualIncome) return
+
+        await onSubmit({ annualIncome, taxYear })
+      } finally {
+        setFormState('idle')
+      }
     },
     [annualIncome, onSubmit, taxYear],
   )
@@ -69,11 +76,11 @@ const TaxForm: FC<Props> = ({ onSubmit, isCalculating = false }) => {
         </div>
       </div>
 
-      <Button type="submit" disabled={isCalculating}>
+      <Button type="submit" disabled={formState === 'submiting'}>
         Calculate taxes
       </Button>
     </form>
   )
 }
 
-export default TaxForm
+export default TaxCalculatorForm
