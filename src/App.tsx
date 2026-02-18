@@ -1,9 +1,9 @@
 import type { FC, SubmitEvent } from 'react'
 import { useState } from 'react'
 
-import AppHeader from './pages/tax-calculator/AppHeader'
-import ResultsPanel from './pages/tax-calculator/ResultsPanel'
-import TaxForm from './pages/tax-calculator/TaxForm'
+import AppHeader from '@/pages/tax-calculator/AppHeader'
+import ResultsPanel from '@/pages/tax-calculator/ResultsPanel'
+import TaxForm from '@/pages/tax-calculator/TaxForm'
 
 const App: FC = () => {
   const [annualIncome, setAnnualIncome] = useState('')
