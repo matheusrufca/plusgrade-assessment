@@ -1,9 +1,0 @@
-*.swp
-*.un~
-*idea/
-*__pycache__/
-.DS_Store
-venv/
-
-# auto-created on build
-templates/generated.html
