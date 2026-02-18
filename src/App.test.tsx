@@ -7,9 +7,9 @@ vi.mock('/vite.svg', () => ({ default: 'vite.svg' }))
 vi.mock('./assets/react.svg', () => ({ default: 'react.svg' }))
 
 describe('App', () => {
-	it('renders the starter heading', () => {
-		render(<App />)
+  it('renders the starter heading', () => {
+    render(<App />)
 
-		expect(screen.getByRole('heading', { name: /vite \+ react/i })).toBeInTheDocument()
-	})
+    expect(screen.getByRole('heading', { name: /vite \+ react/i })).toBeInTheDocument()
+  })
 })
