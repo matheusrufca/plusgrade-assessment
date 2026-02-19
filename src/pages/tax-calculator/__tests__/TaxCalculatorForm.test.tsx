@@ -46,7 +46,7 @@ describe('TaxCalculatorForm', () => {
   })
 
   it('disables the submit button while submitting', async () => {
-    let resolveSubmit: () => void
+    let resolveSubmit: (() => void) | undefined
     const handleSubmit = vi.fn(
       () =>
         new Promise<void>((resolve) => {
@@ -68,7 +68,11 @@ describe('TaxCalculatorForm', () => {
 
     expect(submitButton).toBeDisabled()
 
-    resolveSubmit?.()
+    if (!resolveSubmit) {
+      throw new Error('Resolve function was not assigned')
+    }
+
+    resolveSubmit()
 
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled()
