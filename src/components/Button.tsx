@@ -4,11 +4,14 @@ import { forwardRef } from 'react'
 type Props = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>>
 
 const Button: FC<Props> = forwardRef<HTMLButtonElement, Props>(
-  ({ className = '', children, ...rest }, ref) => (
+  ({ className = '', children, disabled, ...rest }, ref) => (
     <button
       {...rest}
       ref={ref}
-      className={`w-full rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 ${className}`}
+      disabled={disabled}
+      className={`w-full rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 ${
+        disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+      } ${className}`}
     >
       {children}
     </button>

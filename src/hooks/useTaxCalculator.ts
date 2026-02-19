@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 
-import type { TaxFormValues } from '@/pages/tax-calculator/TaxForm'
+import { useLogger } from '@/hooks/useLogger'
+import type { TaxCalculatorFormValues } from '@/pages/tax-calculator/TaxCalculatorForm'
 import type {
   TaxBracket,
   TaxBracketResponse,
@@ -69,26 +70,34 @@ export type TaxCalculationState = {
 
 export const useTaxCalculator = () => {
   const [taxCalculation, setTaxCalculation] = useState<TaxCalculationState>({ status: 'idle' })
+  const logger = useLogger()
 
-  const calculateTaxForValues = useCallback(async (values: TaxFormValues) => {
-    setTaxCalculation((previous) => ({ ...previous, status: 'loading', error: undefined }))
+  const calculateTaxForValues = useCallback(
+    async (values: TaxCalculatorFormValues) => {
+      setTaxCalculation((previous) => ({ ...previous, status: 'loading', error: undefined }))
 
-    try {
-      const income = Number(values.annualIncome)
+      try {
+        const income = Number(values.annualIncome)
 
-      if (!Number.isFinite(income) || income < 0) {
-        throw new Error('Income must be a non-negative number.')
+        if (!Number.isFinite(income) || income < 0) {
+          throw new Error('Income must be a non-negative number.')
+        }
+
+        const { tax_brackets: brackets } = await fetchTaxBrackets(values.taxYear)
+        const result = calculateTax(income, brackets)
+
+        setTaxCalculation((previous) => ({ ...previous, status: 'success', result }))
+      } catch (error) {
+        logger.error('Tax calculation failed', error)
+        setTaxCalculation((previous) => ({
+          ...previous,
+          status: 'error',
+          error: 'We ran into an issue calculating your taxes. Please try again.',
+        }))
       }
-
-      const { tax_brackets: brackets } = await fetchTaxBrackets(values.taxYear)
-      const result = calculateTax(income, brackets)
-
-      setTaxCalculation((previous) => ({ ...previous, status: 'success', result }))
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
-      setTaxCalculation((previous) => ({ ...previous, status: 'error', error: message }))
-    }
-  }, [])
+    },
+    [logger],
+  )
 
   return {
     status: taxCalculation.status,

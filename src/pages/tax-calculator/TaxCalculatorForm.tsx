@@ -62,6 +62,7 @@ const TaxCalculatorForm: FC<Props> = ({ onSubmit }) => {
             placeholder="e.g. 85000"
             value={annualIncome}
             onChange={handleIncomeChange}
+            required
           />
         </div>
         <div className="space-y-2">
