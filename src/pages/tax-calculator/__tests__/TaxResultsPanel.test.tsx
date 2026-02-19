@@ -40,10 +40,4 @@ describe('TaxResultsPanel', () => {
     expect(screen.getByText('0')).toBeInTheDocument()
     expect(screen.queryByText(/by bracket/i)).not.toBeInTheDocument()
   })
-
-  it('renders error message when provided', () => {
-    render(<TaxResultsPanel error="Something went wrong" />)
-
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument()
-  })
 })

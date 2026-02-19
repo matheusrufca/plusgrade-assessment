@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 
 const TaxCalculatorHeader: FC = () => {
   return (
@@ -15,4 +15,4 @@ const TaxCalculatorHeader: FC = () => {
   )
 }
 
-export default TaxCalculatorHeader
+export default memo(TaxCalculatorHeader)

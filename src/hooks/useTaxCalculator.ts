@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
 
-import { useLogger } from '@/hooks/useLogger'
 import type { TaxCalculatorFormValues } from '@/pages/tax-calculator/TaxCalculatorForm'
 import { fetchTaxBrackets } from '@/services/api/taxCalculator'
 import { calculateTax, type TaxCalculationResult } from '@/services/taxCalculator'
+import { logger } from '@/utils/logger'
 
 export type TaxCalculationStatus = 'idle' | 'loading' | 'success' | 'error'
 
@@ -15,7 +15,6 @@ export type TaxCalculationState = {
 
 export const useTaxCalculator = () => {
   const [taxCalculation, setTaxCalculation] = useState<TaxCalculationState>({ status: 'idle' })
-  const logger = useLogger()
 
   const calculateTaxForValues = useCallback(
     async (values: TaxCalculatorFormValues) => {

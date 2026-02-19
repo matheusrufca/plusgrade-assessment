@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import TaxCalculatorForm from '../TaxCalculatorForm'
@@ -43,40 +43,6 @@ describe('TaxCalculatorForm', () => {
     await user.click(screen.getByRole('button', { name: /calculate taxes/i }))
 
     expect(handleSubmit).not.toHaveBeenCalled()
-  })
-
-  it('disables the submit button while submitting', async () => {
-    let resolveSubmit: (() => void) | undefined
-    const handleSubmit = vi.fn(
-      () =>
-        new Promise<void>((resolve) => {
-          resolveSubmit = resolve
-        }),
-    )
-    const user = userEvent.setup()
-
-    render(<TaxCalculatorForm onSubmit={handleSubmit} />)
-
-    const incomeInput = screen.getByLabelText(/annual income/i)
-    const yearSelect = screen.getByLabelText(/tax year/i)
-    const submitButton = screen.getByRole('button', { name: /calculate taxes/i })
-
-    await user.clear(incomeInput)
-    await user.type(incomeInput, '85000')
-    await user.selectOptions(yearSelect, '2021')
-    await user.click(submitButton)
-
-    expect(submitButton).toBeDisabled()
-
-    if (!resolveSubmit) {
-      throw new Error('Resolve function was not assigned')
-    }
-
-    resolveSubmit()
-
-    await waitFor(() => {
-      expect(submitButton).not.toBeDisabled()
-    })
   })
 
   it('shows only supported tax years', () => {

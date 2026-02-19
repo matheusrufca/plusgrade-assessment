@@ -12,13 +12,13 @@ vi.mock('@/services/api/taxCalculator', () => ({
   fetchTaxBrackets: mocks.fetchTaxBracketsMock,
 }))
 
-vi.mock('@/hooks/useLogger', () => ({
-  useLogger: () => ({
+vi.mock('@/utils/logger', () => ({
+  logger: {
     error: mocks.loggerErrorMock,
     warn: vi.fn(),
     info: vi.fn(),
     debug: vi.fn(),
-  }),
+  },
 }))
 
 const getState = () => {

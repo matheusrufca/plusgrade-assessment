@@ -8,7 +8,7 @@ A React + TypeScript + Vite frontend for calculating Canadian federal tax bracke
 - Breakdown by bracket with effective rate
 - Loading/idle/error states
 - Integer-cents math for money values
-- Custom logger utility and hook
+- Custom logger utility
 
 ## Tech Stack
 
@@ -59,15 +59,23 @@ pnpm test:run
 
 - `src/pages/tax-calculator/TaxCalculatorPage.tsx`: Page composition and UI states
 - `src/pages/tax-calculator/TaxCalculatorForm.tsx`: Form inputs and submit flow
-- `src/pages/tax-calculator/ResultsPanel.tsx`: Results display
-- `src/hooks/useTaxCalculator.ts`: Fetch + calculation logic
+- `src/pages/tax-calculator/TaxResultsPanel.tsx`: Results display
+- `src/services/api/taxCalculator.ts`: API client for tax brackets
+- `src/services/taxCalculator.ts`: Pure tax calculation logic (cents-based)
+- `src/hooks/useTaxCalculator.ts`: Orchestrates fetching, calculation, and UI state
 - `src/utils/formatters.ts`: Money and percent formatting
 - `src/utils/logger.ts`: Fake logger utility (`logger.error/info/debug/warn`)
-- `src/hooks/useLogger.ts`: Hook wrapper for the logger
 
-## Money Handling
+## Implementation and Project Customization Notes
 
-All monetary values are calculated in integer cents. Formatting converts cents to dollars for display.
+- Update `VITE_API_BASE_URL` when pointing to a different backend.
+- Expand `src/services/api` to add new endpoints while keeping hooks thin.
+- Husky + lint-staged run checks on pre-commit.
+- Money calculations use integer cents to avoid floating-point rounding errors.
+- Import aliases (`@`).
+- Build optimizations include vendor splitting, compression, and explicit minification.
+- A fake logger provides `error`, `warn`, `info`, and `debug` methods for monitoring.
+- Basic unit testing for components, hooks, and services.
 
 ## Testing
 

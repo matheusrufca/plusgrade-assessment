@@ -1,10 +1,9 @@
 import type { FC, PropsWithChildren } from 'react'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 
-import { useLogger } from '@/hooks/useLogger'
 import { useTaxCalculator } from '@/hooks/useTaxCalculator'
-import TaxResultsPanel from '@/pages/tax-calculator/TaxResultsPanel'
 import TaxCalculatorHeader from '@/pages/tax-calculator/TaxCalculatorHeader'
+import TaxResultsPanel from '@/pages/tax-calculator/TaxResultsPanel'
 import type { TaxCalculatorFormValues } from './TaxCalculatorForm'
 import TaxCalculatorForm from './TaxCalculatorForm'
 
@@ -18,8 +17,7 @@ const ResultsStateCard: FC<PropsWithChildren> = ({ children }) => {
 }
 
 const TaxCalculatorPage: FC = () => {
-  const { status, result, error, calculateTax } = useTaxCalculator()
-  const logger = useLogger()
+  const { status, result, calculateTax } = useTaxCalculator()
 
   const handleSubmit = useCallback(
     async (values: TaxCalculatorFormValues) => {
@@ -28,14 +26,6 @@ const TaxCalculatorPage: FC = () => {
     [calculateTax],
   )
 
-  useEffect(() => {
-    if (status !== 'error') {
-      return
-    }
-
-    logger.error('Tax calculator failed in page', { message: error })
-  }, [error, logger, status])
-
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12">
       <TaxCalculatorHeader />
@@ -43,11 +33,11 @@ const TaxCalculatorPage: FC = () => {
       <main className="mt-10 space-y-8">
         <TaxCalculatorForm onSubmit={handleSubmit} />
 
+        {status === 'success' && <TaxResultsPanel result={result} />}
         {status === 'idle' && (
           <ResultsStateCard>Enter an income and tax year to see the breakdown.</ResultsStateCard>
         )}
         {status === 'loading' && <ResultsStateCard>Loading calculation…</ResultsStateCard>}
-        {status === 'success' && <TaxResultsPanel result={result} error={error} />}
         {status === 'error' && (
           <ResultsStateCard>
             We ran into an issue calculating your taxes. Please try again.

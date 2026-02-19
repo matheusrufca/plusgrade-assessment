@@ -1,11 +1,10 @@
-import type { FC, ReactNode } from 'react'
+import { memo, type FC, type ReactNode } from 'react'
 
 import type { TaxCalculationResult } from '@/services/taxCalculator'
 import { formatCurrency, formatPercent } from '@/utils/formatters'
 
 type Props = {
   result?: TaxCalculationResult
-  error?: string
 }
 
 type LabelValueProps = {
@@ -22,11 +21,10 @@ const LabelValue: FC<LabelValueProps> = ({ label, value }) => {
   )
 }
 
-const TaxResultsPanel: FC<Props> = ({ result, error }) => {
+const TaxResultsPanel: FC<Props> = ({ result }) => {
   return (
     <section className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-6 text-slate-300">
       <p className="text-sm uppercase tracking-[0.2em] text-slate-500">Results</p>
-      {error && <p className="mt-3 text-base text-rose-300">{error}</p>}
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         <LabelValue label="Total tax" value={result ? formatCurrency(result.totalTax) : '$0.00'} />
         <LabelValue
@@ -64,4 +62,4 @@ const TaxResultsPanel: FC<Props> = ({ result, error }) => {
   )
 }
 
-export default TaxResultsPanel
+export default memo(TaxResultsPanel)

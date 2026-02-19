@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useTransition } from 'react'
 
 import Button from '@/components/Button'
 import Input from '@/components/Input'
@@ -20,19 +20,16 @@ const AVAILABLE_YEARS = Object.freeze<number[]>([2019, 2020, 2021, 2022])
 const TaxCalculatorForm: FC<Props> = ({ onSubmit }) => {
   const [annualIncome, setAnnualIncome] = useState('')
   const [taxYear, setTaxYear] = useState('2022')
-  const [formState, setFormState] = useState<'idle' | 'submiting'>('idle')
+  const [isPending, startTransition] = useTransition()
 
   const handleSubmit = useCallback<SubmitEventHandler>(
     async (event) => {
       event.preventDefault()
-      setFormState('submiting')
-      try {
-        if (!taxYear || !annualIncome) return
+      if (!taxYear || !annualIncome) return
 
-        await onSubmit({ annualIncome, taxYear })
-      } finally {
-        setFormState('idle')
-      }
+      startTransition(() => {
+        void onSubmit({ annualIncome, taxYear })
+      })
     },
     [annualIncome, onSubmit, taxYear],
   )
@@ -77,7 +74,7 @@ const TaxCalculatorForm: FC<Props> = ({ onSubmit }) => {
         </div>
       </div>
 
-      <Button type="submit" disabled={formState === 'submiting'}>
+      <Button type="submit" disabled={isPending}>
         Calculate taxes
       </Button>
     </form>
