@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react'
 
-import type { TaxCalculationResult } from '@/types/taxCalculator'
+import type { TaxCalculationResult } from '@/services/taxCalculator'
 import { formatCurrency, formatPercent } from '@/utils/formatters'
 
 type Props = {
@@ -22,7 +22,7 @@ const LabelValue: FC<LabelValueProps> = ({ label, value }) => {
   )
 }
 
-const ResultsPanel: FC<Props> = ({ result, error }) => {
+const TaxResultsPanel: FC<Props> = ({ result, error }) => {
   return (
     <section className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-6 text-slate-300">
       <p className="text-sm uppercase tracking-[0.2em] text-slate-500">Results</p>
@@ -64,4 +64,4 @@ const ResultsPanel: FC<Props> = ({ result, error }) => {
   )
 }
 
-export default ResultsPanel
+export default TaxResultsPanel

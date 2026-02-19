@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react'
 
 import { useLogger } from '@/hooks/useLogger'
 import { useTaxCalculator } from '@/hooks/useTaxCalculator'
-import ResultsPanel from '@/pages/tax-calculator/ResultsPanel'
+import TaxResultsPanel from '@/pages/tax-calculator/TaxResultsPanel'
 import TaxCalculatorHeader from '@/pages/tax-calculator/TaxCalculatorHeader'
 import type { TaxCalculatorFormValues } from './TaxCalculatorForm'
 import TaxCalculatorForm from './TaxCalculatorForm'
@@ -47,7 +47,7 @@ const TaxCalculatorPage: FC = () => {
           <ResultsStateCard>Enter an income and tax year to see the breakdown.</ResultsStateCard>
         )}
         {status === 'loading' && <ResultsStateCard>Loading calculation…</ResultsStateCard>}
-        {status === 'success' && <ResultsPanel result={result} error={error} />}
+        {status === 'success' && <TaxResultsPanel result={result} error={error} />}
         {status === 'error' && (
           <ResultsStateCard>
             We ran into an issue calculating your taxes. Please try again.

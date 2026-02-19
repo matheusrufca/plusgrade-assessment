@@ -16,9 +16,3 @@ export type TaxBreakdown = {
   taxable: number
   tax: number
 }
-
-export type TaxCalculationResult = {
-  totalTax: number
-  effectiveRate: number
-  breakdown: TaxBreakdown[]
-}
